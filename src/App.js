@@ -55,31 +55,21 @@ const KEY = "8b354d4f";
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
-
-  // Move fetch to useEffect to avoid side effects in render
-  // useEffect(() => {
-  //   fetch(`http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`)
-  //     .then((res) => res.json())
-  //     // .then((data) => console.log(data.Search))
-  //     .then((data) => setMovies(data.Search));
-  // }, []);
+  const [isLoading, setisloading] = useState(false);
+  const query = "interstellar";
 
   useEffect(function () {
     async function fetchMovies() {
+      setisloading(true);
       const res = await fetch(
-        `http://www.omdbapi.com/?apikey=${KEY}&s=interstellar`
+        `http://www.omdbapi.com/?apikey=${KEY}&s=${query}`
       );
       const data = await res.json();
       setMovies(data.Search);
+      setisloading(false);
     }
     fetchMovies();
   }, []);
-
-  // useEffect(() => {
-  //   fetch("https://jsonplaceholder.typicode.com/users")
-  //     .then((res) => res.json())
-  //     .then((data) => console.log(data));
-  // }, []);
 
   return (
     <>
@@ -88,15 +78,21 @@ export default function App() {
         <Numresult movies={movies} />
       </Navbar>
       <Main>
-        <Box>
-          <MovieList movies={movies} />
-        </Box>
+        <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />} </Box>
         <Box>
           <WatchedSummary watched={watched} />
           <WatchedMoviesList watched={watched} />
         </Box>
       </Main>
     </>
+  );
+}
+
+function Loader() {
+  return (
+    <div className="loader">
+      <p>Loading...</p>
+    </div>
   );
 }
 
