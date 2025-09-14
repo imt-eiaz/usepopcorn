@@ -53,13 +53,14 @@ const average = (arr) =>
 const KEY = "8b354d4f";
 
 export default function App() {
-  const [query, setQuery] = useState("Hulk");
+  const [query, setQuery] = useState("interstellar");
 
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState([]);
   const [isLoading, setisloading] = useState(false);
   const [error, setError] = useState("");
-  const tempQuery = "interstellar";
+  const [selectedId, setSelectedId] = useState(null);
+
   /*
   useEffect(function () {
     console.log("After initial render");
@@ -78,6 +79,11 @@ export default function App() {
 
   console.log("During render");
 */
+
+  function handleSelectMovie(id) {
+    setSelectedId(id);
+  }
+
   useEffect(
     function () {
       async function fetchMovies() {
@@ -94,7 +100,7 @@ export default function App() {
           const data = await res.json();
           if (data.Response === "False") throw new Error("Movie not found");
           setMovies(data.Search);
-          // console.log(data);
+          // console.log(data.Search);
         } catch (err) {
           console.error(err.message);
           setError(err.message);
@@ -121,7 +127,7 @@ export default function App() {
         <Numresult movies={movies} />
       </Navbar>
       <Main>
-        {/* <Box>{isLoading ? <Loader /> : <MovieList movies={movies} />} </Box>
+        {/*  x>{isLoading ? <Loader /> : <MovieList movies={movies} />} </Box>
         <Box> */}
 
         <Box>
@@ -131,8 +137,14 @@ export default function App() {
         </Box>
 
         <Box>
-          <WatchedSummary watched={watched} />
-          <WatchedMoviesList watched={watched} />
+          {selectedId ? (
+            <MovieDetails selectedId={selectedId} />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedMoviesList watched={watched} />
+            </>
+          )}
         </Box>
       </Main>
     </>
@@ -257,6 +269,10 @@ function Movie({ movie }) {
       </div>
     </li>
   );
+}
+
+function MovieDetails({ selectedId }) {
+  return <div className="details">{selectedId}</div>;
 }
 
 function WatchedSummary({ watched }) {
