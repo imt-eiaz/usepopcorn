@@ -22,7 +22,6 @@ export default function StarRating({
 
   function handleRating(rating) {
     setRating(rating);
-    console.log(`And the Rating is ${rating}`);
   }
 
   const textStyle = {
