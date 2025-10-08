@@ -130,6 +130,7 @@ export default function App() {
         setError("");
         return;
       }
+      handleCloseMovie();
       fetchMovies();
       return function () {
         controller.abort();
@@ -271,8 +272,12 @@ function WatchedBox() {
 function MovieList({ movies, onSelectMovie }) {
   return (
     <ul className="list list-movies">
-      {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} onSelectMovie={onSelectMovie} />
+      {movies?.map((movie, i) => (
+        <Movie
+          movie={movie}
+          key={`${movie.imdbID}-${i}`}
+          onSelectMovie={onSelectMovie}
+        />
       ))}
     </ul>
   );
@@ -332,6 +337,21 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
 
   useEffect(
     function () {
+      function callback(e) {
+        if (e.code === "Escape") {
+          onCloseMovie();
+        }
+      }
+      document.addEventListener("keydown", callback);
+      return function () {
+        document.removeEventListener("keydown", callback);
+      };
+    },
+    [onCloseMovie]
+  );
+
+  useEffect(
+    function () {
       async function getMovieDetails() {
         setIsLoading(true);
         const res = await fetch(
@@ -351,7 +371,6 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
       document.title = `Movie | ${title}`;
       return function () {
         document.title = "usePopcorn";
-        console.log(`Clean up effect for movie ${title}`);
       };
     },
     [title]
@@ -447,10 +466,10 @@ function WatchedSummary({ watched }) {
 function WatchedMoviesList({ watched, onDeleteWatched }) {
   return (
     <ul className="list">
-      {watched.map((movie) => (
+      {watched.map((movie, i) => (
         <WatchedMovie
           movie={movie}
-          key={movie.imdbID}
+          key={`${movie.imdbID}-${i}`}
           onDeleteWatched={onDeleteWatched}
         />
       ))}

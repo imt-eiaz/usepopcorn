@@ -159,8 +159,8 @@ function WatchedBox() {
 function MovieList({ movies }) {
   return (
     <ul className="list">
-      {movies?.map((movie) => (
-        <Movie movie={movie} key={movie.imdbID} />
+      {movies?.map((movie, i) => (
+        <Movie movie={movie} key={`${movie.imdbID}-${i}`} />
       ))}
     </ul>
   );
@@ -214,8 +214,8 @@ function WatchedSummary({ watched }) {
 function WatchedMoviesList({ watched }) {
   return (
     <ul className="list">
-      {watched.map((movie) => (
-        <WatchedMovie movie={movie} key={movie.imdbID} />
+      {watched.map((movie, i) => (
+        <WatchedMovie movie={movie} key={`${movie.imdbID}-${i}`} />
       ))}
     </ul>
   );
