@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import StarRating from "./StarRating";
 
 const average = (arr) =>
@@ -155,6 +155,14 @@ function Logo() {
 }
 
 function Search({ query, setQuery }) {
+  // useEffect(function () {
+  //   const el = document.querySelector(".search");
+  //   console.log(el);
+  //   el.focus();
+  // }, []);
+
+  const inputEl = useRef(null);
+
   return (
     <input
       className="search"
@@ -162,6 +170,7 @@ function Search({ query, setQuery }) {
       placeholder="Search movies..."
       value={query}
       onChange={(e) => setQuery(e.target.value)}
+      ref={inputEl}
     />
   );
 }
